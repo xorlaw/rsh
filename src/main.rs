@@ -1,13 +1,20 @@
 use std::io::{self, Write};
 use std::process::Command;
-use std::io::stdin;
-use std::io::stdout;
+use std::path::PathBuf;
+use std::env;
+
 
 fn main(){
     loop {
-        // Flush to ensure prompt prints before read_line
-        print!(">>> ");
-        stdout().flush();
+
+        let cwd = env::current_dir()
+            .unwrap_or_else(|_| PathBuf::from("?"));
+        print!("{} >>> ", cwd.display());
+
+        if let Err(e) = io::stdout().flush() {
+            eprintln!("vst: failed to flush stdout: {e}");
+        }
+
 
         let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
