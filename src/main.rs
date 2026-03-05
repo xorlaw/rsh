@@ -17,8 +17,19 @@ fn main(){
 
 
         let mut input = String::new();
-        stdin().read_line(&mut input).unwrap();
-
+        match io::stdin().read_line(&mut input) {
+            Ok(0) => {
+                // Prevents potentially looping forever
+                println!();
+                break;
+            }
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("vst: failed to read input: {e}");
+                continue;
+            }
+        }
+    
         // Trim to cleanup junk read_line left
         let mut parts = input.trim().split_whitespace();
         let command = parts.next().unwrap();
