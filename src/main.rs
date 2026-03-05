@@ -33,7 +33,35 @@ fn main(){
         // Trim to cleanup junk read_line left
         let mut parts = input.trim().split_whitespace();
         let command = parts.next().unwrap();
-        let args = parts;
+        let args: Vec<&str> = parts.collect();
+
+        match command {
+            "exit" | "quit" => break,
+
+            "cd" => {
+                let target = args.first().copied().unwrap_or("~");
+                let path = if target == "~" {
+                    env::var("HOME")
+                        .map(PathBuf::from)
+                        .unwrap_or_else(|_| PathBuf::from("/"))
+            } else {
+                PathBuf::from(target)
+                };
+                if let Err(e) = env::set_current_dir(&path) {
+                    eprintln!("cd: {}: {e}", path.display());
+                }
+                continue;              
+        }
+
+
+            "help" => {
+                println!("vst - the tiny rust shell");
+                continue;
+            }
+
+            _ => {}
+        }
+
 
         let mut child = Command::new(command)
             .args(args)
