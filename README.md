@@ -1,8 +1,9 @@
 # vst
 
-*A very simple (sh*tty) terminal.*
+*A very simple terminal. (shell)*
 
 ---
 
-It's a small terminal in Rust. That's it.
+vst is what the name suggests. It's a small, pretty basic shell in Rust.
+
 
