@@ -8,7 +8,7 @@ fn main(){
             .unwrap_or_else(|_| PathBuf::from("?"));
         print!("{} >>> ", cwd.display());
         if let Err(e) = io::stdout().flush() {
-            eprintln!("vst: failed to flush stdout: {e}");
+            eprintln!("rsh: failed to flush stdout: {e}");
         }
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
@@ -19,7 +19,7 @@ fn main(){
             }
             Ok(_) => {}
             Err(e) => {
-                eprintln!("vst: failed to read input: {e}");
+                eprintln!("rsh: failed to read input: {e}");
                 continue;
             }
         }
@@ -44,7 +44,7 @@ fn main(){
                 continue;
             }
             "help" => {
-                println!("vst - the tiny rust shell");
+                println!("rsh - the tiny rust shell");
                 continue;
             }
             _ => {}
@@ -53,9 +53,9 @@ fn main(){
             Ok(child) => child,
             Err(e) => {
                 if e.kind() == io::ErrorKind::NotFound {
-                    eprintln!("vst: command not found: {command}");
+                    eprintln!("rsh: command not found: {command}");
                 } else {
-                    eprintln!("vst: failed to run '{command}': {e}");
+                    eprintln!("rsh: failed to run '{command}': {e}");
                 }
                 continue;
             }
@@ -63,10 +63,10 @@ fn main(){
         match child.wait() {
             Ok(status) if !status.success() => {
                 if let Some(code) = status.code() {
-                    eprintln!("vst: '{command}' exited with code {code}");
+                    eprintln!("rsh: '{command}' exited with code {code}");
                 }
             }
-            Err(e) => eprintln!("vst: failed to wait on '{command}': {e}"),
+            Err(e) => eprintln!("rsh: failed to wait on '{command}': {e}"),
             _ => {}
         }
     }
