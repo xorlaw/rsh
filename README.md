@@ -1,10 +1,11 @@
-# rsh
+<div align="center">
+  <h1>rsh</h1>
+  <p>the small, secure rust shell</p>
+</div>
 
-a small, secure rust shell
 
----
+rsh is a small, somewhat secure Rust shell.
 
-rsh is what the name suggests. It's a small, pretty basic shell in Rust.
 
 
 
