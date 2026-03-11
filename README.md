@@ -8,6 +8,10 @@ This language change can provide some security benefits like memory safety.
 > rsh is a passion project at the most, and is in pretty heavy development.
 > I am also a solo developer. This means that this shell will probably not be the best shell out there. It could probably compete though.
 
+### installing
+
+A makefile will come sometime in the future. For now, clone the project and run `cargo build --release`. Then, if you want to fully use the shell, move the binary to either `/bin` or `/usr/bin`. Either work. You should then be able to fully use rsh.
+
 ### todo
 
 - [x] organize more
@@ -18,6 +22,7 @@ This language change can provide some security benefits like memory safety.
 ### contributing
 
 To contribute, open a pull request. Anything that can help this project be better is accepted.
+
 
 
 
