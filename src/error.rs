@@ -9,6 +9,8 @@ pub enum RshError {
     FlushFailed(std::io::Error),
     CdFailed(String, std::io::Error),
     CwdFailed(std::io::Error),
+    RcNotFound(String),
+    RcReadFailed(String, std::io::Error),
 }
 
 impl std::fmt::Display for RshError {
@@ -21,6 +23,8 @@ impl std::fmt::Display for RshError {
             Self::FlushFailed(e)       => write!(f, "rsh: failed to flush stdout: {e}"),
             Self::CdFailed(path, e)    => write!(f, "cd: {path}: {e}"),
             Self::CwdFailed(e)         => write!(f, "rsh: failed to get cwd: {e}"),
+            Self::RcNotFound(path) => write!(f, "rsh: could not find: {path}"),
+            Self::RcReadFailed(path, e) => write!(f, "rsh: failed tp read {path} : {e}"),
         }
     }
 }

@@ -11,6 +11,15 @@ pub fn run(name: &str, args: &[&str]) -> Option<Result<(), RshError>> {
 
         "cd" => Some(cd(args)),
 
+        "export" => Some(export(args)),
+
+        "alias" => {
+            // placeholder for now
+            Some(Ok(()))
+        }
+
+
+
         "help" => {
             println!("rsh - the small, secure shell");
             println!("builtins: cd, exit, quit, help");
@@ -35,3 +44,20 @@ fn cd(args: &[&str]) -> Result<(), RshError> {
     env::set_current_dir(&path)
         .map_err(|e| RshError::CdFailed(path.display().to_string(), e))
 }
+
+fn export(args: &[&str]) -> Result<(), RshError> {
+    for arg in args {
+        if let Some((key, val)) = arg.split_one('=') {
+            if key.is_empty() {
+                eprintln!("rsh: export: invalid variable name");
+                continue;
+            }
+            env::set_var(key, val);
+        } else {
+            eprintln!("rsh: export: expected KEY=VALUE, instead got '{arg}'")
+        }
+    }
+    Ok(())
+}
+
+

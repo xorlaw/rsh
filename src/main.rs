@@ -3,6 +3,7 @@ mod error;
 mod execute;
 mod input;
 mod parser;
+mod rc;
 mod shell;
 
 fn main() {

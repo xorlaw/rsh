@@ -1,10 +1,15 @@
 // src/shell.rs
 
-use crate::{builtins, execute, input, parser};
+use crate::{builtins, execute, input, parser, rc};
 use std::env;
 use std::path::PathBuf;
 
 pub fn run() {
+
+    rc::load(".rsh_profile");
+    rc::load(".rshrc");
+
+
     loop {
         let prompt = build_prompt();
 
