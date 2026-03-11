@@ -1,7 +1,11 @@
-
 use crate::error::RshError;
 use std::env;
 use std::path::PathBuf;
+// use std::collections::HashMap;
+// use std::sync::Mutex; needed for aliases which i'll probably add later
+
+
+
 
 // Runs a builtin if the command matches one.
 // Returns None if it's not a builtin.
@@ -46,15 +50,20 @@ fn cd(args: &[&str]) -> Result<(), RshError> {
 }
 
 fn export(args: &[&str]) -> Result<(), RshError> {
+    if args.is_empty() {
+        eprintln!("rsh: export: expected KEY=VALUE");
+        return Ok(());
+    }
+
     for arg in args {
-        if let Some((key, val)) = arg.split_one('=') {
-            if key.is_empty() {
-                eprintln!("rsh: export: invalid variable name");
-                continue;
+        match arg.split_once('=') {
+            Some((key, val)) if !key.is_empty() => {
+                env::set_var(key, val);
             }
-            env::set_var(key, val);
-        } else {
-            eprintln!("rsh: export: expected KEY=VALUE, instead got '{arg}'")
+            Some((_, _)) => {
+                eprintln!("rsh: export: invalid variable name in '{arg}'");
+            }
+            None => eprintln!("rsh: export: expected KEY=VALUE, instead got '{arg}'"),
         }
     }
     Ok(())
