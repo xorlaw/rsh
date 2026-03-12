@@ -14,7 +14,7 @@ build:
 debug:
 	$(CARGO) build
 
-install: build
+install:
 	@echo "installing $(BINARY) to $(INSTALL)..."
 	$(SUDO) install -m 755 target/release/$(BINARY) $(INSTALL)/$(BINARY)
 	@grep -qxF "$(INSTALL)/$(BINARY)" $(SHELL_LIST) \
