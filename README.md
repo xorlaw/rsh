@@ -10,7 +10,19 @@ This language change can provide some security benefits like memory safety.
 
 ### installing
 
-A makefile will come sometime in the future. For now, clone the project and run `cargo build --release`. Then, if you want to fully use the shell, move the binary to either `/bin` or `/usr/bin`. Either work. You should then be able to fully use rsh.
+> [!NOTE]
+> If you use `doas` instead of `sudo`, edit the `SUDO = sudo` line near the top of the Makefile to `SUDO = doas`. You can also edit the other variables if you prefer to have a seperate install location.
+
+The Makefile is designed to be pretty flexible. This section is basically just saying how to use it.
+
+- `build` - Builds the project in Release mode. Does not install.
+- `debug` - Builds the project in Debug mode. Does not install.
+- `install` - Adds the built binary in `target/release` to `usr/local/bin` and `/etc/shells`. **Does not build.**
+- `clean` - Cleans the built binary out of `target/release` or `target/debug`. **Does not remove anything from `/etc/shells` or `/usr/local/bin`.**
+- `remove` - Removes the binary out of `/etc/shells` and `/usr/local/bin`.
+
+If you are a regular user, run `make build`, then `make install`.
+
 
 ### todo
 
@@ -22,6 +34,7 @@ A makefile will come sometime in the future. For now, clone the project and run 
 ### contributing
 
 To contribute, open a pull request. Anything that can help this project be better is accepted.
+
 
 
 
