@@ -28,7 +28,8 @@ If you are a regular user, run `make build`, then `make install`.
 
 - [x] organize more
 - [x] make somewhat useable
-- [ ] add aliases
+- [x] add aliases
+- [ ] fix some code in `parser.rs` which breaks alot of aliases
 - [ ] general improvements
 
 ### contributing
