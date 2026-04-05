@@ -29,13 +29,23 @@ pub fn run() {
             None => continue,
         };
 
-        // Try builtins first, then externals if not a builtin
+        let expanded = builtins::expand_alias(cmd.name)
+            .map(|val| format!("{val} {}", cmd.args.join(" ")))
+            .unwrap_or_else(|| format!("{} {}", cmd.name, cmd.args.join(" ")));
+            
+        let expanded = expanded.trim().to_string();
+        
+        let cmd = match parser::parse(&expanded) {
+            Some(c) => c,
+            None => continue,
+        };
+        
         match builtins::run(cmd.name, &cmd.args) {
             Some(Ok(())) => {}
             Some(Err(e)) => eprintln!("{e}"),
             None => {
                 if let Err(e) = execute::run(cmd.name, &cmd.args) {
-                    eprintln!("{e}");
+                    eprintln!("{e}")
                 }
             }
         }

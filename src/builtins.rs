@@ -1,11 +1,49 @@
 use crate::error::RshError;
 use std::env;
 use std::path::PathBuf;
-// use std::collections::HashMap;
-// use std::sync::Mutex; needed for aliases which i'll probably add later
+use std::collections::HashMap;
+use std::sync::{LazyLock, Mutex};
+
+static ALIASES: LazyLock<Mutex<HashMap<String, String>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+const MAX_NAME_LEN: usize = 64;
 
 
+fn is_valid_name(name:&str) -> bool {
+    !name.is_empty()
+        && name.len() <= MAX_NAME_LEN
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+}
 
+fn alias_set(name: &str, value: &str) -> Result<(), String> {
+    if !is_valid_name(name) {
+        return Err(format!(
+            "rsh: alias: invalid name '{name}' - only letters, numbers, _ and - allowed"
+        ));
+    }
+    ALIASES.lock().unwrap().insert(name.to_string(), value.to_string());
+    Ok(())
+}
+
+pub fn expand_alias(name: &str) -> Option<String> {
+    ALIASES.lock().unwrap().get(name).cloned()
+}
+
+fn alias_remove(name: &str) {
+    ALIASES.lock().unwrap().remove(name);
+}
+
+fn alias_list() -> Vec<(String, String)> {
+    let mut entries: Vec<_> = ALIASES
+        .lock()
+        .unwrap()
+        .iter()
+        .map(|(k, v)| (k.clone(), v.clone()))
+        .collect();
+    entries.sort_by(|a, b| a.0.cmp(&b.0));
+    entries
+}
 
 // Runs a builtin if the command matches one.
 // Returns None if it's not a builtin.
@@ -17,10 +55,6 @@ pub fn run(name: &str, args: &[&str]) -> Option<Result<(), RshError>> {
 
         "export" => Some(export(args)),
 
-        "alias" => {
-            // placeholder for now
-            Some(Ok(()))
-        }
 
 
 
@@ -29,6 +63,9 @@ pub fn run(name: &str, args: &[&str]) -> Option<Result<(), RshError>> {
             println!("builtins: cd, exit, quit, help");
             Some(Ok(()))
         }
+        
+        "alias" => Some(alias(args)),
+        "unalias" => Some(unalias(args)),
 
         _ => None,
     }
@@ -65,6 +102,47 @@ fn export(args: &[&str]) -> Result<(), RshError> {
             }
             None => eprintln!("rsh: export: expected KEY=VALUE, instead got '{arg}'"),
         }
+    }
+    Ok(())
+}
+
+fn alias(args: &[&str]) -> Result<(), RshError> {
+    if args.is_empty() {
+        for (name, value) in alias_list() {
+            println!("alias {name}='{value}'");
+            
+        }
+        return Ok(());
+    }
+    for arg in args {
+        match arg.split_once('=') {
+            Some((name, value)) => {
+                let value = value
+                    .trim_matches('\'')
+                    .trim_matches('"');
+                
+                if let Err(e) = alias_set(name, value) {
+                    eprintln!("{e}");
+                }
+            }
+            
+            None => match expand_alias(arg) {
+                Some(val) => println!("alias: {arg} = '{val}'"),
+                None => eprintln!("rsh: alias: {arg}: not found"),
+            },
+        }
+    }
+    Ok(())
+}
+
+fn unalias(args: &[&str]) -> Result<(), RshError> {
+    if args.is_empty() {
+        eprintln!("rsh: unalias: expected at least one name");
+        return Ok(());
+    }
+    
+    for arg in args {
+        alias_remove(arg);
     }
     Ok(())
 }
