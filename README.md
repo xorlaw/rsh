@@ -24,14 +24,6 @@ The Makefile is designed to be pretty flexible. This section is basically just s
 If you are a regular user, run `make build`, then `make install`.
 
 
-### todo
-
-- [x] organize more
-- [x] make somewhat useable
-- [x] add aliases
-- [ ] fix some code in `parser.rs` which breaks alot of aliases
-- [ ] general improvements
-
 ### contributing
 
 To contribute, open a pull request. Anything that can help this project be better is accepted.
