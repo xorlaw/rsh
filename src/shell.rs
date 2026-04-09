@@ -25,7 +25,7 @@ pub fn run() {
             None => continue,
         };
 
-        let args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
+        let _args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
 
         let expanded = builtins::expand_alias(cmd.name.as_str())
             .map(|val| format!("{val} {}", cmd.args.join(" ")))
