@@ -42,19 +42,29 @@ pub fn load(filename: &str) {
             None => continue,
         };
 
+    
+    
 
-        // try builtins first, then external
-        match builtins::run(cmd.name, &cmd.args) {
-            Some(Ok(())) => {}
-            Some(Err(e)) => eprintln!("rsh: {filename}:{}: {e}", i + 1),
-            None => {
-                if let Err(e) = execute::run(cmd.name, &cmd.args) {
-                    eprintln!("rsh: {filename}:{}: {e}", i + 1);
-                }
+
+    // try builtins first, then external
+    let args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
+    match builtins::run(cmd.name.as_str(), &args) {
+        Some(Ok(())) => {}
+        Some(Err(e)) => eprintln!("rsh: {filename}:{}: {e}", i + 1),
+        None => {
+            if let Err(e) = execute::run(cmd.name.as_str(), &args) {
+                eprintln!("rsh: {filename}:{}: {e}", i + 1);
             }
         }
     }
+  }
 }
+
+
+
+
+
+
 
 
 

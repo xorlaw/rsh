@@ -1,21 +1,17 @@
-// src/shell.rs
-
 use crate::{builtins, execute, input, parser, rc};
 use std::env;
 use std::path::PathBuf;
 
 pub fn run() {
-
     rc::load(".rsh_profile");
     rc::load(".rshrc");
-
 
     loop {
         let prompt = build_prompt();
 
         let line = match input::read_line(&prompt) {
             Ok(Some(line)) => line,
-            Ok(None) => { println!(); break; } // Ctrl+D
+            Ok(None) => { println!(); break; }
             Err(e) => { eprintln!("{e}"); continue; }
         };
 
@@ -29,23 +25,27 @@ pub fn run() {
             None => continue,
         };
 
-        let expanded = builtins::expand_alias(cmd.name)
+        let args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
+
+        let expanded = builtins::expand_alias(cmd.name.as_str())
             .map(|val| format!("{val} {}", cmd.args.join(" ")))
             .unwrap_or_else(|| format!("{} {}", cmd.name, cmd.args.join(" ")));
-            
-        let expanded = expanded.trim().to_string();
         
+        let expanded = expanded.trim().to_string();
+
         let cmd = match parser::parse(&expanded) {
             Some(c) => c,
             None => continue,
         };
-        
-        match builtins::run(cmd.name, &cmd.args) {
+
+        let args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
+
+        match builtins::run(cmd.name.as_str(), &args) {
             Some(Ok(())) => {}
             Some(Err(e)) => eprintln!("{e}"),
             None => {
-                if let Err(e) = execute::run(cmd.name, &cmd.args) {
-                    eprintln!("{e}")
+                if let Err(e) = execute::run(cmd.name.as_str(), &args) {
+                    eprintln!("{e}");
                 }
             }
         }
@@ -57,3 +57,6 @@ fn build_prompt() -> String {
         .unwrap_or_else(|_| PathBuf::from("?"));
     format!("{} ~# ", cwd.display())
 }
+
+
+
