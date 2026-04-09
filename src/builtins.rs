@@ -110,28 +110,28 @@ fn alias(args: &[&str]) -> Result<(), RshError> {
     if args.is_empty() {
         for (name, value) in alias_list() {
             println!("alias {name}='{value}'");
-            
         }
         return Ok(());
     }
-    for arg in args {
-        match arg.split_once('=') {
-            Some((name, value)) => {
-                let value = value
-                    .trim_matches('\'')
-                    .trim_matches('"');
-                
-                if let Err(e) = alias_set(name, value) {
-                    eprintln!("{e}");
-                }
+
+    let joined = args.join(" ");
+
+    match joined.split_once('=') {
+        Some((name, value)) => {
+            let name = name.trim();
+            let value = value.trim();
+            if let Err(e) = alias_set(name, value) {
+                eprintln!("{e}");
             }
-            
-            None => match expand_alias(arg) {
-                Some(val) => println!("alias: {arg} = '{val}'"),
-                None => eprintln!("rsh: alias: {arg}: not found"),
-            },
+        }
+        None => {
+            match expand_alias(joined.trim()) {
+                Some(val) => println!("alias {}='{val}'", joined.trim()),
+                None      => eprintln!("rsh: alias: {}: not found", joined.trim()),
+            }
         }
     }
+
     Ok(())
 }
 
