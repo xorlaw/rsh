@@ -8,7 +8,7 @@ static ALIASES: LazyLock<Mutex<HashMap<String, String>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
 
 const MAX_NAME_LEN: usize = 64;
-
+const MAX_VALUE_LEN: usize = 2048;
 
 fn is_valid_name(name:&str) -> bool {
     !name.is_empty()
@@ -18,13 +18,16 @@ fn is_valid_name(name:&str) -> bool {
 
 fn alias_set(name: &str, value: &str) -> Result<(), String> {
     if !is_valid_name(name) {
-        return Err(format!(
-            "rsh: alias: invalid name '{name}' - only letters, numbers, _ and - allowed"
-        ));
+        return Err(format!("rsh: alias: invalid name '{name}' - only letters, numbers, _ and - allowed"));
+    }
+    if value.len() > MAX_VALUE_LEN {
+        return Err(format!("rsh: alias: value too long (max {MAX_VALUE_LEN} characters)"));
     }
     ALIASES.lock().unwrap().insert(name.to_string(), value.to_string());
     Ok(())
 }
+
+
 
 pub fn expand_alias(name: &str, seen: &mut std::collections::HashSet<String>) -> Option<String> {
     if !seen.insert(name.to_string()) {
