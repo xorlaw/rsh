@@ -22,7 +22,7 @@ impl std::fmt::Display for RshError {
             Self::FlushFailed(e)       => write!(f, "rsh: failed to flush stdout: {e}"),
             Self::CdFailed(path, e)    => write!(f, "cd: {path}: {e}"),
             Self::RcNotFound(path) => write!(f, "rsh: could not find: {path}"),
-            Self::RcReadFailed(path, e) => write!(f, "rsh: failed tp read {path} : {e}"),
+            Self::RcReadFailed(path, e) => write!(f, "rsh: failed to read {path} : {e}"),
         }
     }
 }
