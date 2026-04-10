@@ -1,6 +1,8 @@
 use crate::{builtins, execute, input, parser, rc};
 use std::env;
 use std::path::PathBuf;
+use std::collections::HashSet;
+
 
 pub fn run() {
     rc::load(".rsh_profile");
@@ -27,7 +29,7 @@ pub fn run() {
 
         let _args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
 
-        let expanded = builtins::expand_alias(cmd.name.as_str())
+        let expanded = builtins::expand_alias(cmd.name.as_str(), &mut HashSet::new())
             .map(|val| format!("{val} {}", cmd.args.join(" ")))
             .unwrap_or_else(|| format!("{} {}", cmd.name, cmd.args.join(" ")));
         

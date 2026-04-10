@@ -26,9 +26,14 @@ fn alias_set(name: &str, value: &str) -> Result<(), String> {
     Ok(())
 }
 
-pub fn expand_alias(name: &str) -> Option<String> {
+pub fn expand_alias(name: &str, seen: &mut std::collections::HashSet<String>) -> Option<String> {
+    if !seen.insert(name.to_string()) {
+        return None;
+    }
     ALIASES.lock().unwrap().get(name).cloned()
 }
+
+
 
 fn alias_remove(name: &str) {
     ALIASES.lock().unwrap().remove(name);
@@ -125,7 +130,7 @@ fn alias(args: &[&str]) -> Result<(), RshError> {
             }
         }
         None => {
-            match expand_alias(joined.trim()) {
+            match expand_alias(joined.trim(), &mut std::collections::HashSet::new()) {
                 Some(val) => println!("alias {}='{val}'", joined.trim()),
                 None      => eprintln!("rsh: alias: {}: not found", joined.trim()),
             }
