@@ -1,8 +1,7 @@
 # rsh
 **the small, simple rust shell**
 
-rsh is a small, pretty crappy (currently) shell that is written in Rust, unlike most shells that are written in C.
-This language change can provide some security benefits like memory safety.
+rsh is a small, portable, secure and fast shell in Rust.
 
 > [!IMPORTANT]
 > rsh is a passion project at the most, and is in pretty heavy development.
@@ -23,12 +22,19 @@ The Makefile is designed to be pretty flexible. This section is basically just s
 
 If you are a regular user, run `make build`, then `make install`.
 
+### repository mirrors
+
+Since Github sucks, there are some mirrors for this repository available on other sites. They are listed below.
+
+- [Primary mirror](https://git.lawrencejohnston.co.uk/rsh): Most reliable. Ran on my own hardware.
+
+Want to create your own mirror for RSH? Email me at [xorlaw@tuta.io](mailto:xorlaw@tuta.io). 
+
 ### donating
 
 Donations are highly appreciated and help me work on this more often as it helps motivate me.
 
-Kofi: https://ko-fi.com/xorlaw
-Crypto: If requested.
+**Ko-Fi**: [@xorlaw](https://ko-fi.com/xorlaw)
 
 ### contributing
 
