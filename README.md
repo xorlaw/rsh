@@ -23,6 +23,12 @@ The Makefile is designed to be pretty flexible. This section is basically just s
 
 If you are a regular user, run `make build`, then `make install`.
 
+### donating
+
+Donations are highly appreciated and help me work on this more often as it helps motivate me.
+
+Kofi: https://ko-fi.com/xorlaw
+Crypto: If requested.
 
 ### contributing
 
