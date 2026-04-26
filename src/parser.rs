@@ -1,25 +1,41 @@
 pub struct Command {
-    pub name: String,
-    pub args: Vec<String>,
+    pub name:   String,
+    pub args:   Vec<String>,
 }
 
-pub fn parse(input: &str) -> Option<Command> {
-    let mut tokens = tokenise(input);
-    if tokens.is_empty() {
+pub struct Pipeline {
+    pub commands: Vec<Command>,
+}
+
+pub fn parse(input: &str) -> Option<Pipeline> {
+    let segments: Vec<&str> = input.split('|').collect();
+
+    let mut commands = Vec::new();
+
+    for segment in segments {
+        let mut tokens = tokenise(segment);
+        if tokens.is_empty() {
+            continue;
+        }
+
+        let name = tokens.remove(0);
+        commands.push(Command { name, args: tokens });
+    }
+
+    if commands.is_empty() {
         return None;
     }
-    let name = tokens.remove(0);
-    Some(Command { name, args: tokens })
+
+    Some(Pipeline { commands })
 }
 
 fn tokenise(input: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     let mut current = String::new();
-    let mut chars = input.chars().peekable();
     let mut in_single = false;
     let mut in_double = false;
 
-    while let Some(c) = chars.next() {
+    for c in input.chars() {
         match c {
             '\'' if !in_double => in_single = !in_single,
             '"'  if !in_single => in_double = !in_double,
@@ -29,7 +45,7 @@ fn tokenise(input: &str) -> Vec<String> {
                     current.clear();
                 }
             }
-            _ => current.push(c)
+            _ => current.push(c),
         }
     }
 
