@@ -43,7 +43,7 @@ pub fn load(filename: &str) {
         }; 
 
     let cmd = &pipeline.commands[0];
-    let args: Vec<&str> = cmds.args.iter().map(|s| s.as_str()).collect();
+    let args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
     match builtins::run(cmd.name.as_str(), &args) {
         Some(Ok(())) => {}
         Some(Err(e)) => eprintln!("rsh: {filename}:{}: {e}", i + 1),

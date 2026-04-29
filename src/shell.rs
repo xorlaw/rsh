@@ -1,6 +1,6 @@
 use crate::{builtins, execute, input, parser, rc};
 use std::env;
-use std::path:::PathBuf;
+use std::path::PathBuf;
 use std::collections::HashSet;
 
 pub fn run() {
@@ -33,7 +33,7 @@ pub fn run() {
         }
 
         let cmd = &pipeline.commands[0];
-        let expanded = builtins::expand_alias(&cmd.name, &mut Hashset::new())
+        let expanded = builtins::expand_alias(&cmd.name, &mut HashSet::new())
             .map(|val| format!("{val} {}", cmd.args.join(" ")))
             .unwrap_or_else(|| format!("{} {}", cmd.name, cmd.args.join(" ")));
 
@@ -50,7 +50,7 @@ pub fn run() {
         }
 
         let cmd = &pipeline.commands[0];
-        let args: Vec<&str> = cmds.args.iter().map(|s| s.as_str()).collect();
+        let args: Vec<&str> = cmd.args.iter().map(|s| s.as_str()).collect();
         match builtins::run(&cmd.name, &args) {
             Some(Ok(()))    => {}
             Some(Err(e))    => eprintln!("{e}"),
