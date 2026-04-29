@@ -37,17 +37,13 @@ pub fn load(filename: &str) {
             continue;
         }
 
-        let cmd = match parser::parse(line) {
+        let pipeline = match parser::parse(line) {
             Some(c) => c,
             None => continue,
-        };
+        }; 
 
-    
-    
-
-
-    // try builtins first, then external
-    let args: Vec<&str> = cmd.args.iter().map(|s: &String| s.as_str()).collect();
+    let cmd = &pipeline.commands[0];
+    let args: Vec<&str> = cmds.args.iter().map(|s| s.as_str()).collect();
     match builtins::run(cmd.name.as_str(), &args) {
         Some(Ok(())) => {}
         Some(Err(e)) => eprintln!("rsh: {filename}:{}: {e}", i + 1),
