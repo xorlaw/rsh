@@ -10,8 +10,6 @@ pub enum RshError {
     CdFailed(String, std::io::Error),
     RcNotFound(String),
     RcReadFailed(String, std::io::Error),
-    PipeCreationFailed(std::io::Error),
-    PipelineFailed(String),
 }
 
 impl std::fmt::Display for RshError {
@@ -25,8 +23,6 @@ impl std::fmt::Display for RshError {
             Self::CdFailed(path, e)    => write!(f, "cd: {path}: {e}"),
             Self::RcNotFound(path) => write!(f, "rsh: could not find: {path}"),
             Self::RcReadFailed(path, e) => write!(f, "rsh: failed to read {path} : {e}"),
-            Self::PipeCreationFailed(e) => write!(f, "rsh: failed to create pipe: {e}"),
-            Self::PipelineFailed(msg)   => write!(f, "rsh: pipeline error: {msg}"),
         }
     }
 }
