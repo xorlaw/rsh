@@ -4,7 +4,8 @@ BINARY = rsh
 INSTALL = /usr/local/bin
 SHELL_LIST = /etc/shells
 CARGO = cargo
-SUDO = sudo # switch to doas if you want
+SUDO = doas # switch to doas if you want
+TYPE = debug # depends on how you build rsh, else will cause errors when trying to find target dir
 
 .PHONY: build debug install clean remove
 
@@ -16,7 +17,7 @@ debug:
 
 install:
 	@echo "installing $(BINARY) to $(INSTALL)..."
-	$(SUDO) install -m 755 target/release/$(BINARY) $(INSTALL)/$(BINARY)
+	$(SUDO) install -m 755 target/$(TYPE)/$(BINARY) $(INSTALL)/$(BINARY)
 	@grep -qxF "$(INSTALL)/$(BINARY)" $(SHELL_LIST) \
 		|| echo "$(INSTALL)/$(BINARY)" | $(SUDO) tee -a $(SHELL_LIST) > /dev/null
 	@echo "done. $(BINARY) installed and registered in $(SHELL_LIST)"
