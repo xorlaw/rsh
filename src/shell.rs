@@ -36,9 +36,9 @@ pub fn run() {
             let start = Instant::now();
             exit_code = match execute::run_pipeline(&pipeline) {
                 Ok(code)    => code,
-                Err(e)      => eprintln!("{e}"); 1 }
-        };
-            duration_ms = start.elapsed().as_millis() as u64
+                Err(e)      => { eprintln!("{e}"); 1 }
+            };
+            duration_ms = start.elapsed().as_millis() as u64;
     
             continue;
         }
@@ -54,9 +54,12 @@ pub fn run() {
         };
 
         if pipeline.commands.len() > 1 {
-            if let Err(e) = execute::run_pipeline(&pipeline) {
-                eprintln!("{e}");
-            }
+            let start = Instant::now();
+            exit_code = match execute::run_pipeline(&pipeline) {
+                Ok(code)    => code,
+                Err(e)      => { eprintln!("{e}"); 1 }
+            };
+            duration_ms = start.elapsed().as_millis() as u64;
             continue;
         }
 
@@ -75,6 +78,7 @@ pub fn run() {
             }
         };
         duration_ms = start.elapsed().as_millis() as u64;
+    }
 }
 
 fn build_prompt(exit_code: i32, duration_ms: u64) -> String {
