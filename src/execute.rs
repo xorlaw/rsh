@@ -3,7 +3,7 @@ use crate::parser::Pipeline;
 use std::io;
 use std::process::{Command, Stdio};
 
-pub fn run(name: &str, args: &[&str]) -> Result<(), RshError> {
+pub fn run(name: &str, args: &[&str]) -> Result<i32, RshError> {
     let mut child = Command::new(name)
         .args(args)
         .spawn()
@@ -25,10 +25,14 @@ pub fn run(name: &str, args: &[&str]) -> Result<(), RshError> {
         }
     }
 
-    Ok(())
+    let code = status.code().unwrap_or(1);
+    if !status.success() {
+        eprintln!("rsh: '{name}' exited with code {code}");
+    }
+    Ok(code)
 }
 
-pub fn run_pipeline(pipeline: &Pipeline) -> Result<(), RshError> {
+pub fn run_pipeline(pipeline: &Pipeline) -> Result<i32, RshError> {
     let cmds = &pipeline.commands;
     let count = cmds.len();
 
@@ -70,19 +74,18 @@ pub fn run_pipeline(pipeline: &Pipeline) -> Result<(), RshError> {
         children.push((cmd.name.clone(), child));
     }
 
+    let mut last_code = 0i32;
     for (name, mut child) in children {
-        let status = child
-            .wait()
+        let status = child.wait()
             .map_err(|e| RshError::WaitFailed(name.clone(), e))?;
-
+        last_code = status.code().unwrap_or(1);
         if !status.success() {
-            if let Some(code) = status.code() {
-                eprintln!("rsh: '{name}' exited with code {code}");
-            }
+            eprintln!("rsh: '{name}' exited with code {last_code}");
         }
     }
 
-    Ok(())
+
+    Ok(last_code)
 }
 
 
