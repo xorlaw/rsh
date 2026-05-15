@@ -89,6 +89,7 @@ fn build_prompt(exit_code: i32, duration_ms: u64) -> String {
         .output()
         .ok()
         .and_then(|o| String::from_utf8(o.stdout).ok())
+        .map(|s| s.replace("\\[", "").replace("\\]", ""))
         .unwrap_or_else(|| {
             let cwd = env::current_dir().unwrap_or_else(|_| PathBuf::from("?"));
             format!("{} ~# ", cwd.display())
