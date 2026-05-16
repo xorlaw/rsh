@@ -1,14 +1,37 @@
 use crate::error::RshError;
 use crate::parser::Pipeline;
 use std::io;
+use std::fs::OpenOptions;
 use std::process::{Command, Stdio};
 
 pub fn run(name: &str, args: &[&str]) -> Result<i32, RshError> {
-    let mut child = Command::new(name)
-        .args(args)
-        .spawn()
+    use crate::parser::Redirect;
+    let mut cmd_builder = Command::new(name);
+    cmd_builder.args(args);
+
+    for redirect in redirects {
+        match redirect {
+            Redirect::Overwrite(path) => {
+                let file = OpenOptions::new().write(true).create(true).truncate(true).open(path)
+                    .map_err(|e| RshError::SpawnFailed(name.to_string(), e))?;
+                cmd_builder.stdout(file);
+            }
+            Redirect::Append(path) => {
+                let file = OpenOptions::new().write(true).create(true).append(true).open(path)
+                    .map_err(|e| RshError::SpawnFailed(name.to_string(), e))?;
+                cmd_builder.stdout(file);
+            }
+            Redirect::Input(path) => {
+                let file = OpenOptions::new().read(true).open(path)
+                    .map_err(|e| RshError::SpawnFailed(name.to_string(), e))?;
+                cmd_builder.stdin(file);
+            }
+        }
+    }
+
+    let mut child = cmd_builder.spawn()
         .map_err(|e| {
-            if e.kind() == io::ErrorKind::NotFound {
+            if e.kind() == io.ErrorKind::NotFound {
                 RshError::CommandNotFound(name.to_string())
             } else {
                 RshError::SpawnFailed(name.to_string(), e)
