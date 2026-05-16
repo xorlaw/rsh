@@ -31,7 +31,7 @@ pub fn run(name: &str, args: &[&str], redirects: &[crate::parser::Redirect]) -> 
 
     let mut child = cmd_builder.spawn()
         .map_err(|e| {
-            if e.kind() == io.ErrorKind::NotFound {
+            if e.kind() == io::ErrorKind::NotFound {
                 RshError::CommandNotFound(name.to_string())
             } else {
                 RshError::SpawnFailed(name.to_string(), e)
