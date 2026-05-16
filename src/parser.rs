@@ -35,7 +35,7 @@ pub fn parse(input: &str) -> Option<Pipeline> {
         while i < tokens.len() {
             match tokens[i].as_str() {
                 ">>" => {
-                    if let Some(target_ = tokens.get(i + 1)) {
+                    if let Some(target) = tokens.get(i + 1) {
                         redirects.push(Redirect::Append(target.clone()));
                         i += 2;
                     } else {
