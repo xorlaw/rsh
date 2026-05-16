@@ -76,7 +76,7 @@ pub fn run() {
             Some(Ok(()))    => 0,
             Some(Err(e))    => { eprintln!("{e}"); 1 }
             None => {
-                match execute::run(&cmd.name, &args) {
+                match execute::run(&cmd.name, &args, &cmd.redirects) {
                     Ok(code)    => code,
                     Err(e)      => { eprintln!("{e}"); 1 }
                 }
