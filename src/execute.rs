@@ -24,12 +24,8 @@ pub fn run(name: &str, args: &[&str]) -> Result<i32, RshError> {
             eprintln!("rsh: '{name}' exited with code {code}");
         }
     }
-
-    let code = status.code().unwrap_or(1);
-    if !status.success() {
-        eprintln!("rsh: '{name}' exited with code {code}");
-    }
-    Ok(code)
+    
+    Ok(status.code().unwrap_or(1))
 }
 
 pub fn run_pipeline(pipeline: &Pipeline) -> Result<i32, RshError> {
@@ -79,9 +75,6 @@ pub fn run_pipeline(pipeline: &Pipeline) -> Result<i32, RshError> {
         let status = child.wait()
             .map_err(|e| RshError::WaitFailed(name.clone(), e))?;
         last_code = status.code().unwrap_or(1);
-        if !status.success() {
-            eprintln!("rsh: '{name}' exited with code {last_code}");
-        }
     }
 
 
