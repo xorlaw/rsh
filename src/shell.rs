@@ -48,9 +48,18 @@ pub fn run() {
             .map(|val| format!("{val} {}", cmd.args.join(" ")))
             .unwrap_or_else(|| format!("{} {}", cmd.name, cmd.args.join(" ")));
 
-        let pipeline = match parser::parse(expanded.trim()) {
-            Some(p) => p,
-            None    => continue,
+        let pipeline = if let Some9alias_val) = builtins::expand_alias(&cmd.name, &mut HashSet::new()) {
+            match parser::parse(alias_val.trim()) {
+                Some(mut p) => {
+                    if let Some(last) = p.commands.last_mut() {
+                        last.args.extend(cmd.args.iter().cloned());
+                    }
+                    p
+                }
+                None => continue,
+            }
+        } else {
+            pipeline
         };
 
         if pipeline.commands.len() > 1 {
