@@ -1,8 +1,10 @@
+#[derive(Clone)]
 pub struct Command {
     pub name:   String,
     pub args:   Vec<String>,
 }
 
+#[derive(Clone)]
 pub struct Pipeline {
     pub commands: Vec<Command>,
 }

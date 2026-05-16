@@ -43,12 +43,9 @@ pub fn run() {
             continue;
         }
 
-        let cmd = &pipeline.commands[0];
-        let expanded = builtins::expand_alias(&cmd.name, &mut HashSet::new())
-            .map(|val| format!("{val} {}", cmd.args.join(" ")))
-            .unwrap_or_else(|| format!("{} {}", cmd.name, cmd.args.join(" ")));
 
-        let pipeline = if let Some9alias_val) = builtins::expand_alias(&cmd.name, &mut HashSet::new()) {
+        let cmd = &pipeline.commands[0];
+        let pipeline = if let Some(alias_val) = builtins::expand_alias(&cmd.name, &mut HashSet::new()) {
             match parser::parse(alias_val.trim()) {
                 Some(mut p) => {
                     if let Some(last) = p.commands.last_mut() {
@@ -72,7 +69,6 @@ pub fn run() {
             continue;
         }
 
-        let cmd = &pipeline.commands[0];
         let args: Vec<&str> = cmd.args.iter().map(|s| s.as_str()).collect();
 
         let start = Instant::now();
