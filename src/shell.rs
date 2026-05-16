@@ -49,7 +49,7 @@ pub fn run() {
             match parser::parse(alias_val.trim()) {
                 Some(mut p) => {
                     if let Some(last) = p.commands.last_mut() {
-                        last.args.extend(cmd.args);
+                        last.args.extend(cmd.args.clone());
                     }
                     p
                 }
