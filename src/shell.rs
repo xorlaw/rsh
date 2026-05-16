@@ -44,12 +44,12 @@ pub fn run() {
         }
 
 
-        let cmd = &pipeline.commands[0];
+        let cmd = &pipeline.commands[0].clone();
         let pipeline = if let Some(alias_val) = builtins::expand_alias(&cmd.name, &mut HashSet::new()) {
             match parser::parse(alias_val.trim()) {
                 Some(mut p) => {
                     if let Some(last) = p.commands.last_mut() {
-                        last.args.extend(cmd.args.iter().cloned());
+                        last.args.extend(cmd.args);
                     }
                     p
                 }
