@@ -1,7 +1,15 @@
 #[derive(Clone)]
+pub enum Redirect {
+    Overwrite(String),
+    Append(String),
+    Input(String),
+}
+
+#[derive(Clone)]
 pub struct Command {
-    pub name:   String,
-    pub args:   Vec<String>,
+    pub name:       String,
+    pub args:       Vec<String>,
+    pub redirects:  Vec<Redirect>,
 }
 
 #[derive(Clone)]
@@ -21,7 +29,42 @@ pub fn parse(input: &str) -> Option<Pipeline> {
         }
 
         let name = tokens.remove(0);
-        commands.push(Command { name, args: tokens });
+        let mut args = Vec::new();
+        let mut redirects = Vec::new();
+        let mut i = 0;
+        while i < tokens.len() {
+            match tokens[i].as_str() {
+                ">>" => {
+                    if let Some(target_ = tokens.get(i + 1) {
+                        redirects.push(Redirect::Append(target.clone()));
+                        i += 2;
+                    } else {
+                        eprintln!("rsh: parse: expected filename after '>>'");
+                        i += 1;
+                    }
+                }
+                ">" => {
+                    if let Some(target) = tokens.get(i + 1) {
+                        redirects.push(Redirect::Overwrite(target.clone()));
+                        i += 2;
+                    } else {
+                        eprintln!("rsh: parse: expected filename after '>'");
+                        i += 1;
+                    }
+                }
+                "<" => {
+                    if let Some(target) = tokens.get(i + 1) {
+                        redirects.push(Redirect::Input(target.clone()));
+                        i += 2;
+                    } else {
+                        eprintln!("rsh: parse: expected filename after '<'");
+                        i += 1;
+                    }
+                }
+                _ => { args.push(tokens[i].clone()); i += 1; }
+            }
+        }
+        commands.push(Command { name, args, redirects });
     }
 
     if commands.is_empty() {
