@@ -4,7 +4,7 @@ use std::io;
 use std::fs::OpenOptions;
 use std::process::{Command, Stdio};
 
-pub fn run(name: &str, args: &[&str]) -> Result<i32, RshError> {
+pub fn run(name: &str, args: &[&str], redirects: &[crate::parser::Redirect]) -> Result<i32, RshError> {
     use crate::parser::Redirect;
     let mut cmd_builder = Command::new(name);
     cmd_builder.args(args);
