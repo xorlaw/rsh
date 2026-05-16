@@ -48,7 +48,7 @@ pub fn load(filename: &str) {
         Some(Ok(())) => {}
         Some(Err(e)) => eprintln!("rsh: {filename}:{}: {e}", i + 1),
         None => {
-            if let Err(e) = execute::run(cmd.name.as_str(), &args) {
+            if let Err(e) = execute::run(cmd.name.as_str(), &args, &cmd.redirects) {
                 eprintln!("rsh: {filename}:{}: {e}", i + 1);
             }
         }
